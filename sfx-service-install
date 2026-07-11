@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+service_name="$1"
+cd "$(dirname "$0")"
+mkdir -p ~/.config/systemd/user
+if [[ -f "sfx@.service" ]]; then
+	cp sfx@.service ~/.config/systemd/user/${service_name}.service
+else
+	curl -sSL https://raw.githubusercontent.com/spagreeks/xelf/main/sfx@.service -o ~/.config/systemd/user/${service_name}.service
+fi
+
+loginctl enable-linger
+systemctl --user reset-failed
+systemctl --user daemon-reload
+
+echo "Service ${service_name} installed successfully."
